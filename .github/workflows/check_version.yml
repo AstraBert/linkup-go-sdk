@@ -19,7 +19,7 @@ jobs:
           go-version: "1.24"
 
       - name: Install OpenAPI codegen
-        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@lates
+        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 
       - name: Run version check
         run: bash check_openapi.sh
