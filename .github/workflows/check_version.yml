@@ -1,0 +1,26 @@
+name: Check OpenAPI Spec
+
+on:
+  pull_request:
+
+jobs:
+  check-openapi-spec:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Install OpenAPI codegen
+        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+
+      - name: Run version check
+        run: bash check_openapi.sh
+        working-directory: codegen
