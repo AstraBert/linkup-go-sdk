@@ -58,7 +58,7 @@ func TestGetResultFromRawJson(t *testing.T) {
 	}
 	val, err := GetResultFromRawJSON[TestUser](string(serialized))
 	if err != nil {
-		t.Fatalf("Unexpecting error while getting user from serialized representation: %s", err.Error())
+		t.Fatalf("Unexpected error while getting user from serialized representation: %s", err.Error())
 	}
 	typedVal, ok := val.(TestUser)
 	if !ok {
@@ -66,5 +66,44 @@ func TestGetResultFromRawJson(t *testing.T) {
 	}
 	if typedVal.ID != user.ID || typedVal.Name != user.Name || !slices.Equal(typedVal.Friends, user.Friends) {
 		t.Fatalf("Expecting function to yield %v as return value, got %v", user, typedVal)
+	}
+}
+
+func TestGetResultFromSourcedOutput(t *testing.T) {
+	user := TestUser{
+		ID:      1,
+		Name:    "Lucy",
+		Friends: []int{2, 3, 4},
+	}
+	userMap := map[string]any{"id": 1, "name": "Lucy", "friends": []int{2, 3, 4}}
+	sourcedOutput := &StructuredWithSourcesDto{
+		Data:    userMap,
+		Sources: nil,
+	}
+	val, err := GetResultFromSourcedOutput[TestUser](sourcedOutput)
+	if err != nil {
+		t.Fatalf("Unexpected error while getting user from serialized representation: %s", err.Error())
+	}
+	typedVal, ok := val.(TestUser)
+	if !ok {
+		t.Fatal("Expecting TestUser type, but type assertion was unsuccessfull.")
+	}
+	if typedVal.ID != user.ID || typedVal.Name != user.Name || !slices.Equal(typedVal.Friends, user.Friends) {
+		t.Fatalf("Expecting function to yield %v as return value, got %v", user, typedVal)
+	}
+}
+
+func TestGetResultFromSourcedOutputEmptyData(t *testing.T) {
+	sourcedOutput := &StructuredWithSourcesDto{
+		Data:    nil,
+		Sources: nil,
+	}
+	_, err := GetResultFromSourcedOutput[TestUser](sourcedOutput)
+	if err == nil {
+		t.Fatal("Expecting an error, got none")
+	} else {
+		if err.Error() != "the Data field is null" {
+			t.Fatalf("Unexpected error message: %s", err.Error())
+		}
 	}
 }
