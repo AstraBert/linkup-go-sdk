@@ -1,2 +1,3 @@
 openapi.yaml
 openapi.gencheck.go
+docs/index.md

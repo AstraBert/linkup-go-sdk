@@ -1,3 +1,4 @@
+// [Linkup](https://linkup.so) Go SDK, providing `search` and `fetch` functionalities.
 package linkup
 
 import (
